@@ -1,0 +1,29 @@
+「○○○株式会社ウェブサイト」より、
+下記お問い合わせを受け付けました。
+
+---------- 
+▼氏名
+{$d.name_family} {$d.name_first}
+（{$d.name_family_kana} {$d.name_first_kana}）
+
+▼会社名
+{$d.name_company}
+
+▼部署名
+{$d.name_section}
+
+▼役職名
+{$d.name_position}
+
+▼電話番号
+{$d.tel}
+
+▼E-mailアドレス
+{$d.email}
+
+▼お問い合わせ内容
+{$d.comments}
+---------- 
+
+
+以上

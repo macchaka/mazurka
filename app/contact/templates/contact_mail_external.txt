@@ -1,0 +1,42 @@
+{$d.name_company}　{$d.name_section}　{$d.name_position}
+{$d.name_family} {$d.name_first}さま
+
+○○○株式会社のウェブサイトをご訪問いただきありがとうございます。
+お問い合わせいただいた内容を受け付けました。
+追って担当者より連絡差し上げます。
+よろしくお願いします。
+
+お問い合わせいただいた内容
+
+---------- 
+▼氏名
+{$d.name_family} {$d.name_first}
+（{$d.name_family_kana} {$d.name_first_kana}）
+
+▼会社名
+{$d.name_company}
+
+▼部署名
+{$d.name_section}
+
+▼役職名
+{$d.name_position}
+
+▼電話番号
+{$d.tel}
+
+▼E-mailアドレス
+{$d.email}
+
+▼お問い合わせ内容
+{$d.comments}
+---------- 
+
+
+-- 
+○○○株式会社
+〒100-0000
+東京都中央区○○○1-2-3　中央ビル123号
+TEL: 03-1234-5678
+FAX: 03-1234-5689
+http://www.example.jp/

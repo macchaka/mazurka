@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>actFormサンプル</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <form class="form-horizontal" style="padding-top:20px;" action="form.php" method="post">
+        <!-- 姓名 -->
+        <div class="control-group{if $e.g.familyName} error{/if}">
+            <label class="control-label">お名前</label>
+            <div class="controls">
+                <input type="text" name="name_family" value="{$d.name_family}" class="input-small" id="familyName" />
+                {if $e.f.name_family.required}<span class="help-inline">お名前（姓）を入力してください。</span>{/if}
+                <input type="text" name="name_first" value="{$d.name_first}" class="input-small" id="firstName" />
+                {if $e.f.name_first.required}<span class="help-inline">お名前（名）を入力してください。</span>{/if}
+            </div>
+        </div>
+        <!-- せいめい -->
+        <div class="control-group{if $e.g.familyNameKana} error{/if}">
+            <label class="control-label">お名前（フリガナ）</label>
+            <div class="controls">
+                <input type="text" name="name_family_kana" value="{$d.name_family_kana}" class="input-small" id="familyNameKana" />
+                {if $e.f.name_family_kana.required}<span class="help-inline">お名前（フリガナ）（姓）を入力してください。</span>{/if}
+                <input type="text" name="name_first_kana" value="{$d.name_first_kana}" class="input-small" id="firstNameKana" />
+                {if $e.f.name_first_kana.required}<span class="help-inline">お名前（フリガナ）（名）を入力してください。</span>{/if}
+            </div>
+        </div>
+        <!-- 会社・団体名 -->
+        <div class="control-group">
+            <label class="control-label">会社・団体名</label>
+            <div class="controls">
+                <input type="text" name="name_company" value="{$d.name_company}" class="input-xxlarge" id="companyName" />
+            </div>
+        </div>
+        <!-- 部署名 -->
+        <div class="control-group">
+            <label class="control-label">部署名</label>
+            <div class="controls">
+                <input type="text" name="name_section" value="{$d.name_section}" class="input-xxlarge" id="sectionName" />
+            </div>
+        </div>
+        <!-- 役職名 -->
+        <div class="control-group">
+            <label class="control-label">役職名</label>
+            <div class="controls">
+                <input type="text" name="name_position" value="{$d.name_position}" class="input-xxlarge" id="positionName" />
+            </div>
+        </div>
+        <!-- 電話番号 -->
+        <div class="control-group{if $e.f.tel} error{/if}">
+            <label class="control-label">電話番号</label>
+            <div class="controls">
+                <input type="text" name="tel" value="{$d.tel}" class="input-xxlarge" id="phoneNumber" placeholder="例: 03-1234-5678" />
+                {if $e.f.tel.required}<span class="help-inline">電話番号を入力してください。</span>{/if}
+                {if $e.f.tel.invalid}<span class="help-inline">電話番号の書式が誤っています。正しく入力してください。</span>{/if}
+            </div>
+        </div>
+        <!-- メールアドレス -->
+        <div class="control-group{if $e.f.email} error{/if}">
+            <label class="control-label">メールアドレス</label>
+            <div class="controls">
+                <input type="text" name="email" value="{$d.email}" class="input-xxlarge" id="mailAddress" />
+                {if $e.f.email.required}<span class="help-inline">メールアドレスを入力してください。</span>{/if}
+                {if $e.f.email.invalid}<span class="help-inline">メールアドレスの書式が誤っています。正しく入力してください。</span>{/if}
+            </div>
+        </div>
+        <!-- お問い合わせ内容 -->
+        <div class="control-group{if $e.f.comments} error{/if}">
+            <label class="control-label">お問い合わせ内容</label>
+            <div class="controls">
+                <textarea name="comments" cols="50" rows="8" id="contactComments" class="input-xxlarge">{$d.comments}</textarea>
+                {if $e.f.comments.required}<span class="help-inline">お問い合わせ内容を入力してください。</span>{/if}
+                {if $e.f.comments.max_length}<span class="help-inline">メールアドレスの書式が誤っています。正しく入力してください。</span>{/if}
+                <p>{if $e.f.comments.max_length}文字数が多すぎます。{/if}400文字以内でお願いします。</p>
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" name="submit" value="{$smarty.const.BTN_SUBMIT}" class="btn">
+            </div>
+        </div>
+    </form>
+
+</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>actFormサンプル</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+	<p>入力された内容をご確認いただき、問題なければ「送信する」ボタンを押してください。</p>
+    <form class="form-horizontal" style="padding-top:20px;" action="form.php" method="post">
+        <!-- 姓名 -->
+        <div class="control-group{if $e.g.familyName} error{/if}">
+            <label class="control-label">お名前</label>
+            <div class="controls">
+            	{$d.name_family}　{$d.name_first}
+            </div>
+        </div>
+        <!-- せいめい -->
+        <div class="control-group{if $e.g.familyNameKana} error{/if}">
+            <label class="control-label">お名前（フリガナ）</label>
+            <div class="controls">
+            	{$d.name_family_kana}　{$d.name_first_kana}
+            </div>
+        </div>
+        <!-- 会社・団体名 -->
+        <div class="control-group">
+            <label class="control-label">会社・団体名</label>
+            <div class="controls">
+            	{$d.name_company}
+            </div>
+        </div>
+        <!-- 部署名 -->
+        <div class="control-group">
+            <label class="control-label">部署名</label>
+            <div class="controls">
+            	{$d.name_section}
+            </div>
+        </div>
+        <!-- 役職名 -->
+        <div class="control-group">
+            <label class="control-label">役職名</label>
+            <div class="controls">
+            	{$d.name_position}
+            </div>
+        </div>
+        <!-- 電話番号 -->
+        <div class="control-group{if $e.f.tel} error{/if}">
+            <label class="control-label">電話番号</label>
+            <div class="controls">
+            	{$d.tel}
+            </div>
+        </div>
+        <!-- メールアドレス -->
+        <div class="control-group{if $e.f.email} error{/if}">
+            <label class="control-label">メールアドレス</label>
+            <div class="controls">
+            	{$d.email}
+            </div>
+        </div>
+        <!-- お問い合わせ内容 -->
+        <div class="control-group{if $e.f.comments} error{/if}">
+            <label class="control-label">お問い合わせ内容</label>
+            <div class="controls">
+            	{$d.comments|escape:'html':'UTF-8'|nl2br}
+            </div>
+        </div>
+
+
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" name="submit" value="{$smarty.const.BTN_SEND}" class="btn btn-primary">
+                <input type="submit" name="submit" value="{$smarty.const.BTN_BACK}" class="btn">
+            </div>
+        </div>
+    </form>
+
+</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>

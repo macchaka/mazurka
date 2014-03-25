@@ -1,0 +1,4 @@
+app/smarty/libs/*
+app/contact/templates_c/*.php
+
+!app/smarty/libs/.gitkeep
