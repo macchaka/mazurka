@@ -44,7 +44,7 @@
     define( 'TPL_MAIL_INTERNAL', 'contact_mail_internal.txt');
 
 // ■システムエラー定義
-    $msg_syserr['timeout'] = <<< EOF
+    $systemErrorMessage['timeout'] = <<< EOF
 <html><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"></head>
 <body><p>長い時間操作がなかったため、セッションが切れました。最初からやり直して下さい。</p></body></html>
 EOF;

@@ -1,4 +1,6 @@
 <?php
+use Mazurka\Mazurka;
+
 /**
  * mazurka FormFramework
  * Controller
@@ -11,7 +13,7 @@
 
 require_once (APP_DIR . '/mazurka.php');
 
-class controller extends mazurka {
+class controller extends Mazurka {
     public function first() {
         parent::first();
         $this->render();
