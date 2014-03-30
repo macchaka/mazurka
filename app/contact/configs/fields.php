@@ -6,16 +6,16 @@
 // ※行末のカンマ注意（最終行のみ不要）
 
 $formItem['field'] = array (
-    'name_family'       => array ('require' => true, 'convert' => 'aKV'),
-    'name_first'        => array ('require' => true, 'convert' => 'aKV'),
-    'name_family_kana'  => array ('require' => true, 'convert' => 'aKV'),
-    'name_first_kana'   => array ('require' => true, 'convert' => 'aKV'),
+    'name_family'       => array ('required' => true, 'convert' => 'aKV'),
+    'name_first'        => array ('required' => true, 'convert' => 'aKV'),
+    'name_family_kana'  => array ('required' => true, 'convert' => 'aKV'),
+    'name_first_kana'   => array ('required' => true, 'convert' => 'aKV'),
     'name_company'      => array ('convert' => 'aKV'),
     'name_section'      => array ('convert' => 'aKV'),
     'name_position'     => array ('convert' => 'aKV'),
-    'tel'               => array ('require' => true, 'valid_format' => '^0(3-\d{4}|6-\d{4}|\d{2}-\d{3}|\d{3}-\d{2}|\d{4}-\d{1})-\d{4}$', 'convert' => 'a'),
+    'tel'               => array ('required' => true, 'valid_format' => '^0(3-\d{4}|6-\d{4}|\d{2}-\d{3}|\d{3}-\d{2}|\d{4}-\d{1})-\d{4}$', 'convert' => 'a'),
     'email'             => array ('convert' => 'a'),
-    'comments'          => array ('require' => true, 'max_length' => 400, 'convert' => 'aKV')
+    'comments'          => array ('required' => true, 'max_length' => 400, 'convert' => 'aKV')
 );
 
 // ■項目のグループ関係

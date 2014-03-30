@@ -203,7 +203,7 @@ class Mazurka
             $value = isset($this->inputData[$key]) ? $this->inputData[$key] : '';
 
             //必須チェック
-            if (!empty($val['require']) && $value === '') {
+            if (!empty($val['required']) && $value === '') {
                 $errorResult['f'][$key]['required'] = true;
             }
 
