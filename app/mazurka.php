@@ -1,4 +1,8 @@
 <?php
+namespace Mazurka;
+use \Smarty;
+use \Qdmail;
+
 /**
  * mazurka FormFramework
  *
@@ -8,50 +12,52 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-class mazurka {
-    public $input_data = array();
-    public $err_result = array();
-    public $smarty;
+class Mazurka
+{
+    public $inputData = array();
+    public $errorResult = array();
+    public $Smarty;
     public $template;
 
-    /**
-     * [__construct description]
-     */
-    public function __construct() {
+/**
+ * [__construct description]
+ */
+    public function __construct()
+    {
         mb_language(LANGUAGE);
         mb_internal_encoding(ENCODING);
         session_start();
+
         // Smartyを使うための準備
         require_once( APP_DIR . '/smarty/libs/Smarty.class.php' );
-        $this->smarty = new Smarty();
-        $this->smarty->template_dir = APP_DIR . '/' . FORM_NAME . '/templates/';
-        $this->smarty->compile_dir  = APP_DIR . '/' . FORM_NAME . '/templates_c/';
-        $this->smarty->config_dir   = APP_DIR . '/' . FORM_NAME . '/configs/';
-        $this->smarty->cache_dir    = APP_DIR . '/' . FORM_NAME . '/cache/';
+        $this->Smarty = new Smarty();
+        $this->Smarty->template_dir = APP_DIR . '/' . FORM_NAME . '/templates/';
+        $this->Smarty->compile_dir  = APP_DIR . '/' . FORM_NAME . '/templates_c/';
+        $this->Smarty->config_dir   = APP_DIR . '/' . FORM_NAME . '/configs/';
+        $this->Smarty->cache_dir    = APP_DIR . '/' . FORM_NAME . '/cache/';
     }
 
-    /**
-     * [dispatch description]
-     * @param  [type] $postdata [description]
-     * @return [type]           [description]
-     */
-    public function dispatch($postdata) {
+/**
+ * [dispatch description]
+ * @param  [type] $postdata [description]
+ * @return [type]           [description]
+ */
+    public function dispatch($postdata)
+    {
         require (APP_DIR . '/' . FORM_NAME . '/configs/field.php');
 
-        if(!empty($postdata)){
+        if (!empty($postdata)) {
             //フォームデータの取得
-            foreach($postdata as $key => $val) {
-                $convert_regulation = @$FormItem['field'][$key]['convert'];
-
+            foreach ($postdata as $key => $val) {
                 //変換指定があれば、変換してから値をセットする
-                if ($convert_regulation){
-                    $this->input_data[$key] = $this->_gpc_stripslashes($this->_delete_nullbyte(mb_convert_kana($val,$convert_regulation)));
+                if (isset($formItem['field'][$key]['convert'])) {
+                    $this->inputData[$key] = $this->deleteNullbyte(mb_convert_kana($val, $formItem['field'][$key]['convert']));
                 } else {
-                    $this->input_data[$key] = $this->_gpc_stripslashes($this->_delete_nullbyte($val));
+                    $this->inputData[$key] = $this->deleteNullbyte($val);
                 }
             }
 
-            switch($this->input_data['submit']) {
+            switch ($this->inputData['submit']) {
                 case BTN_BACK:
                     //戻るボタンを押した状態
                     //ただしセッションが空の場合は不正アクセス
@@ -70,12 +76,12 @@ class mazurka {
                     //ただしセッションが空の場合は不正アクセス
                     if (!empty($_SESSION['form'])) {
                         //確認画面からはデータはPOSTされてきていないため、セッションから復元
-                        $this->input_data = $_SESSION['form'];
+                        $this->inputData = $_SESSION['form'];
                         $this->send();
                     }
                     break;
                 default:
-                    echo $msg_syserr['timeout'];
+                    echo $systemErrorMessage['timeout'];
                     exit();
             }
         } else {
@@ -83,224 +89,202 @@ class mazurka {
         }
     }
 
-    /**
-     * [first description]
-     * @return [type] [description]
-     */
-    public function first() {
+/**
+ * [first description]
+ * @return [type] [description]
+ */
+    public function first()
+    {
         //初回アクセス（POSTが送られてきていない）
         $this->template = TPL_INDEX;
     }
 
-    /**
-     * [back description]
-     * @return [type] [description]
-     */
-    public function back() {
+/**
+ * [back description]
+ * @return [type] [description]
+ */
+    public function back()
+    {
         //戻るボタンを押した→フォームへ差し戻し
-        $input_data = $_SESSION['form'];
-        $this->smarty->assign('d',$input_data);
+        $inputData = $_SESSION['form'];
+        $this->Smarty->assign('d', $inputData);
         $this->template = TPL_INDEX;
     }
 
-    /**
-     * [proof description]
-     * @return [type] [description]
-     */
-    public function proof() {
+/**
+ * [proof description]
+ * @return [type] [description]
+ */
+    public function proof()
+    {
         //======== 入力審査
-        $err_result = $this->input_chk();
+        $errorResult = $this->inputCheck();
 
-        if ($err_result) {
+        if ($errorResult) {
             //エラーあり→入力画面へ
-            $this->smarty->assign('d', $this->input_data);
-            $this->smarty->assign('e', $err_result);
+            $this->Smarty->assign('d', $this->inputData);
+            $this->Smarty->assign('e', $errorResult);
             $this->template = TPL_INDEX;
         } else {
             //入力エラーなし→確認画面へ
             //セッションへ記憶
-            $_SESSION['form'] = $this->input_data;
-            $this->smarty->assign('d',$this->input_data);
+            $_SESSION['form'] = $this->inputData;
+            $this->Smarty->assign('d', $this->inputData);
             $this->template = TPL_PROOF;
         }
     }
 
-    /**
-     * [send description]
-     * @return [type] [description]
-     */
-    public function send() {
+/**
+ * [send description]
+ * @return [type] [description]
+ */
+    public function send()
+    {
         //送信（確認画面で送信）
         //======== 送信実行＜確認画面で「送信」ボタンを押されたため
-
         require_once (APP_DIR . '/qdmail/qdmail.php' );
         require      (APP_DIR . '/' . FORM_NAME . '/configs/field.php');
-        $MailKey = $FormItem['MailItemName'];
-        $MailAdr = $this->input_data[$MailKey];
+        $mailKey = $formItem['MailItemName'];
+        $mailAddress = $this->inputData[$mailKey];
 
         //■メール送信
         //（登録者向け）
-        $this->smarty->assign('d', $this->input_data);
-        $body = $this->smarty->fetch(TPL_MAIL_EXTERNAL);
-
-        $mail = new Qdmail();
-        $mail->lineFeed("\n");
-
-        $mail->easyText(
-             array( $MailAdr , '' ),
-             SUBJECT_EXTERNAL ,
-             $body,
-             array(ADMIN_MAIL , '')
-         );
+        $this->sendMail($mailAddress, ADMIN_MAIL, SUBJECT_EXTERNAL, TPL_MAIL_EXTERNAL);
 
         //（管理者向け）
-        $this->smarty->assign('d',$this->input_data);
-        $body = $this->smarty->fetch(TPL_MAIL_INTERNAL);
-
-        $mail->easyText(
-              array( ADMIN_MAIL , '' ),
-              SUBJECT_INTERNAL ,
-              $body,
-              array($MailAdr , '')
-         );
+        $this->sendMail(ADMIN_MAIL, $mailAddress, SUBJECT_INTERNAL, TPL_MAIL_INTERNAL);
 
         //画面切り替え
         $this->template = TPL_COMPLETE;
         session_destroy();
     }
 
-    /**
-     * [render description]
-     * @return [type] [description]
-     */
-    public function render() {
-        $this->smarty->display($this->template);
+/**
+ * [render description]
+ * @return [type] [description]
+ */
+    public function render()
+    {
+        $this->Smarty->display($this->template);
     }
 
-    /**
-     * [input_chk description]
-     * @return [type] [description]
-     */
-    public function input_chk(){
-        $err_result = array();
+/**
+ * [inputCheck description]
+ * @return [type] [description]
+ */
+    public function inputCheck()
+    {
+        $errorResult = array();
 
         require (APP_DIR . '/' . FORM_NAME . '/configs/field.php');
 
         //メールアドレスチェック
-        $MailKey = $FormItem['MailItemName'];
-        if (isset($this->input_data[$MailKey]) && $this->input_data[$MailKey] != '' ) {
-            if($this->_address_check($this->input_data[$MailKey])){
-                $err_result['f'][$MailKey]['invalid'] = TRUE;
+        $mailKey = $formItem['MailItemName'];
+        if (isset($this->inputData[$mailKey]) && $this->inputData[$mailKey] != '' ) {
+            if ($this->addressCheck($this->inputData[$mailKey])) {
+                $errorResult['f'][$mailKey]['invalid'] = true;
             }
         } else {
-            $err_result['f'][$MailKey]['required'] = TRUE;
+            $errorResult['f'][$mailKey]['required'] = true;
         }
 
         //合致チェック
-        foreach($FormItem['match'] as $key => $val){
-            if ( @$this->input_data["{$key}"] != @$this->input_data["{$val}"] ) {
-                $err_result['f'][$key]['mismatch'] = TRUE;
+        foreach ($formItem['match'] as $key => $val) {
+            if (isset($this->inputData["{$key}"]) && isset($this->inputData["{$val}"])
+                && $this->inputData["{$key}"] !== $this->inputData["{$val}"]) {
+                $errorResult['f'][$key]['mismatch'] = true;
             } else {
-                $err_result['f'][$key]['mismatch'] = FALSE;
+                $errorResult['f'][$key]['mismatch'] = false;
             }
         }
 
         //設定された内容でチェック
-        foreach($FormItem['field'] as $key => $val){
-            $null_chk = @$val['require'];
-            $str_length = @$val['max_length'];
-            $accept_pattern = @$val['valid_format'];
-            $reject_pattern = @$val['invalid_format'];
-
-            $err_msg = "";
-            $err_pattern = false;
-
-            if (isset($this->input_data[$key])) {
-                $value = $this->input_data[$key];
-            } else {
-                $value = "";
-            }
+        foreach ($formItem['field'] as $key => $val) {
+            $value = isset($this->inputData[$key]) ? $this->inputData[$key] : '';
 
             //必須チェック
-            if($null_chk){
-                if($value == ""){
-                    $err_result['f'][$key]['required'] = TRUE;
-                }
+            if (!empty($val['require']) && $value === '') {
+                $errorResult['f'][$key]['required'] = true;
             }
 
             //文字数
-            if($str_length){
-                if(mb_strlen($value,ENCODING) > $str_length ){
-                    $err_result['f'][$key]['max_length'] = TRUE;
-                }
+            if (!empty($val['max_length'])
+                && (mb_strlen($value, ENCODING) > (integer)$val['max_length'])) {
+                $errorResult['f'][$key]['max_length'] = true;
             }
 
             //有効書式
-            if($accept_pattern){
-                if($value != "" && !preg_match("/".$accept_pattern."/",$value)){
-                    $err_result['f'][$key]['invalid'] = TRUE;
-                }
+            if (!empty($val['valid_format'])
+                && $value !== '' && !preg_match('/' . $val['valid_format'] . '/', $value)) {
+                $errorResult['f'][$key]['invalid'] = true;
             }
 
             //無効書式
-            if($reject_pattern){
-                if($value != "" && preg_match("/".$reject_pattern."/",$value)){
-                    $err_result['f'][$key]['invalid'] = TRUE;
-                }
+            if (!empty($val['invalid_format'])
+                && $value !== '' && preg_match('/' . $val['invalid_format'] . '/', $value)) {
+                $errorResult['f'][$key]['invalid'] = true;
             }
         }
 
         //親フィールドへのエラー状況更新
-        foreach($FormItem['group'] as $parentname => $child){
-            $errflg = 0;
-            foreach($child as $fieldname){
-                if (@$err_result['f'][$fieldname]){
-                    $errflg += 1;
+        foreach ($formItem['group'] as $parentname => $child) {
+            foreach ($child as $fieldname) {
+                if (!empty($errorResult['f'][$fieldname])) {
+                    $errorResult['g'][$parentname] = true;
+                    break;
                 }
             }
-            if ($errflg){
-                $err_result['g'][$parentname] = TRUE;
-            }
         }
 
-        return $err_result;
+        return $errorResult;
     }
 
-    /**
-     * [_gpc_stripslashes description]
-     * @param  [type] $str [description]
-     * @return [type]      [description]
-     */
-    private function _gpc_stripslashes($str){
-        //gpcの設定に応じて、stripslashersをかける
-        if (get_magic_quotes_gpc()==1) {
-            return stripslashes($str);
-        } else {
-            return $str;
-        }
-    }
-
-    /**
-     * [_delete_nullbyte description]
-     * @param  [type] $str [description]
-     * @return [type]      [description]
-     */
-    private function _delete_nullbyte($str)
+/**
+ * [deleteNullbyte description]
+ * @param  [type] $str [description]
+ * @return [type]      [description]
+ */
+    private function deleteNullbyte($str)
     {
-        return str_replace("\0", "", $str);
+        return str_replace("\0", '', $str);
     }
 
-    /**
-     * [_address_check description]
-     * @param  [type] $src [description]
-     * @return [type]      [description]
-     */
-    private function _address_check($src){
-		$regulation = '/^[^0-9][a-zA-Z0-9_\-]+([.][a-zA-Z0-9_\-]+)*[@][a-zA-Z0-9_\-]+([.][a-zA-Z0-9_\-]+)*[.][a-zA-Z]{2,4}$/';
-        if(!preg_match($regulation,$src)){
-        	return TRUE;
+/**
+ * [addressCheck description]
+ * @param  [type] $src [description]
+ * @return [type]      [description]
+ */
+    private function addressCheck($src)
+    {
+        $regulation = '/^[^0-9][a-zA-Z0-9_\-]+([.][a-zA-Z0-9_\-]+)*[@][a-zA-Z0-9_\-]+([.][a-zA-Z0-9_\-]+)*[.][a-zA-Z]{2,4}$/';
+        if (!preg_match($regulation, $src)) {
+            return true;
         } else {
-        	return FALSE;
+            return false;
         }
+    }
+
+/**
+ * メール送信
+ * @param  string $to 宛先メールアドレス
+ * @param  string $from 発信元メールアドレス
+ * @param  string $subject タイトル
+ * @param  string $template メールテンプレート
+ * @return null
+ */
+    protected function sendMail($to, $from, $subject, $template)
+    {
+        $Mail = new Qdmail();
+        $Mail->lineFeed("\n");
+
+        $this->Smarty->assign('d', $this->inputData);
+        $body = $this->Smarty->fetch($template);
+
+        $Mail->easyText(
+             array($to, ''),
+             $subject ,
+             $body,
+             array($from, '')
+         );
     }
 }

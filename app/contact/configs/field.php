@@ -5,7 +5,7 @@
 // 　フィールド名＞DBに更新しない項目は空に
 // ※行末のカンマ注意（最終行のみ不要）
 
-$FormItem['field'] = array (
+$formItem['field'] = array (
     'name_family'       => array ('require' => true, 'convert' => 'aKV'),
     'name_first'        => array ('require' => true, 'convert' => 'aKV'),
     'name_family_kana'  => array ('require' => true, 'convert' => 'aKV'),
@@ -19,7 +19,7 @@ $FormItem['field'] = array (
 );
 
 // ■項目のグループ関係
-$FormItem['group'] = array (
+$formItem['group'] = array (
     'familyName'  => array ('name_family','name_first'),
     'familyNameKana'  => array ('name_family_kana','name_first_kana')
 );
@@ -27,10 +27,10 @@ $FormItem['group'] = array (
 // ■宛先メールアドレスとして認識させる項目名（１つまで）
 // ここで指定した項目はメールアドレスとしてのチェックを受けるので、
 // フォーム項目で有効書式等チェックは必要ありません。
-$FormItem['MailItemName'] = 'email';
+$formItem['MailItemName'] = 'email';
 
 
 // ■フィールド合致チェックの項目
 //
-$FormItem['match'] = array (
+$formItem['match'] = array (
 );
