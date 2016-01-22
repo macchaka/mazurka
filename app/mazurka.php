@@ -44,7 +44,7 @@ class Mazurka
  */
     public function dispatch($postdata)
     {
-        require (APP_DIR . '/' . FORM_NAME . '/configs/field.php');
+        require (APP_DIR . '/' . FORM_NAME . '/configs/fields.php');
 
         if (!empty($postdata)) {
             //フォームデータの取得
@@ -143,7 +143,7 @@ class Mazurka
         //送信（確認画面で送信）
         //======== 送信実行＜確認画面で「送信」ボタンを押されたため
         require_once (APP_DIR . '/qdmail/qdmail.php' );
-        require      (APP_DIR . '/' . FORM_NAME . '/configs/field.php');
+        require      (APP_DIR . '/' . FORM_NAME . '/configs/fields.php');
         $mailKey = $formItem['MailItemName'];
         $mailAddress = $this->inputData[$mailKey];
 
@@ -176,7 +176,7 @@ class Mazurka
     {
         $errorResult = array();
 
-        require (APP_DIR . '/' . FORM_NAME . '/configs/field.php');
+        require (APP_DIR . '/' . FORM_NAME . '/configs/fields.php');
 
         //メールアドレスチェック
         $mailKey = $formItem['MailItemName'];

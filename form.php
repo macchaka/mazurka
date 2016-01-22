@@ -49,6 +49,8 @@
 <body><p>長い時間操作がなかったため、セッションが切れました。最初からやり直して下さい。</p></body></html>
 EOF;
 
+    date_default_timezone_set('Asia/Tokyo');
+
     require_once (APP_DIR . '/' . FORM_NAME . '/controller.php');
 
     $obj = new controller();
